@@ -87,35 +87,15 @@ def test_git_blob_audit_distinguishes_lf_from_crlf() -> None:
     assert _git_blob_id(b"header,value\nA,1\n") != _git_blob_id(b"header,value\r\nA,1\r\n")
 
 
-def test_public_readmes_use_aggregate_star_badge_and_anonymous_trend() -> None:
-    badge = "https://img.shields.io/github/stars/hang-jin/editaplot?style=social"
-    trend = "https://raw.githubusercontent.com/hang-jin/editaplot/metrics/assets/star-trend/stars.svg"
-    repository_link = '<a href="https://github.com/hang-jin/editaplot">'
+def test_public_readmes_state_provenance_and_avoid_star_tracking_paths() -> None:
+    upstream = "https://github.com/hang-jin/editaplot"
     forbidden = ("/stargazers", "api.star-history.com")
 
     for name in ("README.md", "README.en.md"):
         content = (PRODUCT_ROOT / name).read_text(encoding="utf-8")
-        assert badge in content
-        assert trend in content
-        assert repository_link in content
+        assert upstream in content
+        assert "docs/installation.md" in content
         assert all(token not in content for token in forbidden)
-
-
-def test_public_readmes_end_with_optional_support_section() -> None:
-    chinese = (PRODUCT_ROOT / "README.md").read_text(encoding="utf-8")
-    english = (PRODUCT_ROOT / "README.en.md").read_text(encoding="utf-8")
-    asset = "assets/support/wechat-tip.png"
-
-    assert chinese.rfind("## 请我喝杯咖啡 ☕") > chinese.rfind("## 开源、贡献与支持")
-    assert "一毛、两毛或几块钱" in chinese
-    assert "赞赏完全自愿" in chinese
-    assert "不会解锁任何额外功能" in chinese
-    assert asset in chinese
-
-    assert english.rfind("## Buy me a coffee ☕") > english.rfind("## Open source, contributing, and support")
-    assert "Tips are entirely optional" in english
-    assert "do not unlock features" in english
-    assert asset in english
 
 
 def test_gallery_inventory_and_display_selection_are_separate() -> None:
